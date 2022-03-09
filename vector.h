@@ -26,15 +26,25 @@ public:
         values = new value_type[max_sz];
         sz = 0;
     }
-    ~Vector() {
-        delete[] values;
-    }
     Vector(const Vector& src) {
         max_sz = src.max_sz;
         sz = src.sz;
         values = new value_type[max_sz];
         for (size_t i{0}; i < sz; ++i)
             values[i] = src.values[i];
+    }
+    Vector(initializer_list<value_type> list) {
+        max_sz = list.size();
+        sz = max_sz;
+        values = new value_type[max_sz];
+
+        size_t i{0};
+        for(auto v : list) {
+            values[i++] = v;
+        }
+    }
+    ~Vector() {
+        delete[] values;
     }
     Vector& operator=(Vector src) {
         swap(sz, src.sz);
@@ -52,12 +62,6 @@ public:
             values = new_values;
         }
     }
-    void push_back(const_reference val) {
-        if (sz >= max_sz) {
-            reserve(2*max_sz+1);
-        }
-        values[sz++] = val;
-    }
     void clear() {
         sz = 0;
     }
@@ -65,6 +69,43 @@ public:
         for (size_t i{0}; i < sz; ++i)
             o << values[i] << '\n';
         return o;
+    }
+    size_t size() const {
+        return sz;
+    }
+    size_t capacity() const {
+        return max_sz;
+    }
+    bool empty() const {
+        return sz == 0;
+    }
+    void shrink_to_fit() {
+        if(max_sz > sz){
+            value_type* new_values = new value_type[sz];
+            for (size_t i{0}; i < sz; ++i)
+                new_values[i] = values[i];
+            max_sz = sz;
+            delete[] values;
+            values = new_values;
+        }
+    }
+    void push_back(const_reference val) {
+        if (sz >= max_sz) {
+            reserve(2*max_sz+1);
+        }
+        values[sz++] = val;
+    }
+    void pop_back() {
+        if(empty())
+            throw runtime_error("pop_back failed: vector cannot be empty");
+        
+        sz--;
+    }
+    value_type& operator[](size_t index) {
+        return values[index];
+    }
+    const value_type& operator[](size_t index) const {
+        return values[index];
     }
 };
 
