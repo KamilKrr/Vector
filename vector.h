@@ -97,14 +97,24 @@ public:
     }
     void pop_back() {
         if(empty())
-            throw runtime_error("pop_back failed: vector cannot be empty");
+            throw runtime_error ("pop_back failed: vector cannot be empty");
         
         sz--;
     }
     value_type& operator[](size_t index) {
+        if(index < 0)
+            throw std::out_of_range ("index cannot be negative");
+        if(index >= sz)
+            throw std::out_of_range ("index out of bounds");
+
         return values[index];
     }
     const value_type& operator[](size_t index) const {
+        if(index < 0)
+            throw std::out_of_range ("index cannot be negative");
+        if(index >= sz)
+            throw std::out_of_range ("index out of bounds");
+
         return values[index];
     }
 };
