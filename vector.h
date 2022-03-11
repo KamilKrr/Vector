@@ -6,9 +6,18 @@ using namespace std;
 
 class Vector {
 public:
+	class ConstIterator;
+	class Iterator;
     using value_type = double;
+	using size_type = size_t;
+	using difference_type = ptrdiff_t;
+	using reference = value_type&;
     using pointer = value_type*;
+	using const_pointer = const value_type*;
     using const_reference = const value_type&;
+	using iterator = Vector::Iterator;
+	using const_iterator = Vector::ConstIterator;
+	
 
 private:
     size_t max_sz;
@@ -16,6 +25,43 @@ private:
     pointer values;
 
 public:
+
+class Iterator {
+	public: 
+		using value_type = Vector::value_type;
+		using reference = Vector::reference;
+		using pointer = Vector::pointer;
+		using difference_type = Vector::difference_type;
+		using iterator_category = forward_iterator_tag;
+
+	private:
+		pointer ptr;
+	public:
+		Iterator() : ptr{nullptr} {};
+		Iterator(pointer ptr) : ptr{ptr} {};
+		reference operator*() {
+			return *ptr;
+		}
+		pointer operator->() {
+			return ptr;
+		}
+		bool operator==(const const_iterator& rop) const {
+			return ptr == rop.
+		}
+		bool operator!=(const const_iterator& rop) const {
+			return !(this == rop);
+		}
+};
+class ConstIterator {
+	public: 
+		using value_type = Vector::value_type;
+		using reference = Vector::const_reference;
+		using pointer = Vector::const_pointer;
+		using difference_type = Vector::difference_type;
+		using iterator_category = forward_iterator_tag;
+	private:
+		pointer ptr;
+};
     Vector() {
         max_sz = 0;
         sz = 0;
@@ -117,6 +163,14 @@ public:
 
         return values[index];
     }
+
+	iterator begin() {
+		return Iterator(values);
+	}
+
+	iterator end() {
+		return Iterator(values+sz);
+	}
 };
 
 #endif

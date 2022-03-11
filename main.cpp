@@ -12,6 +12,8 @@ int main(){
     cout << v1.capacity();
     cout << v2.capacity();
 
+    cout << *v1.begin();
+
 
     return 0;
 }
