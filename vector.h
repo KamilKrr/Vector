@@ -1,8 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
-#include <cstddef>
 #include <iostream>
-using namespace std;
 
 class Vector {
 public:
@@ -32,7 +30,7 @@ class Iterator {
 		using reference = Vector::reference;
 		using pointer = Vector::pointer;
 		using difference_type = Vector::difference_type;
-		using iterator_category = forward_iterator_tag;
+		using iterator_category = std::forward_iterator_tag;
 
 	private:
 		pointer ptr;
@@ -68,7 +66,7 @@ class ConstIterator {
 		using reference = Vector::const_reference;
 		using pointer = Vector::const_pointer;
 		using difference_type = Vector::difference_type;
-		using iterator_category = forward_iterator_tag;
+		using iterator_category = std::forward_iterator_tag;
 	private:
 		pointer ptr;
 	public:
@@ -114,7 +112,7 @@ class ConstIterator {
         for (size_t i{0}; i < sz; ++i)
             values[i] = src.values[i];
     }
-    Vector(initializer_list<value_type> list) {
+    Vector(std::initializer_list<value_type> list) {
         max_sz = list.size();
         sz = max_sz;
         values = new value_type[max_sz];
@@ -128,9 +126,9 @@ class ConstIterator {
         delete[] values;
     }
     Vector& operator=(Vector src) {
-        swap(sz, src.sz);
-        swap(max_sz, src.max_sz);
-        swap(values, src.values);
+        std::swap(sz, src.sz);
+        std::swap(max_sz, src.max_sz);
+        std::swap(values, src.values);
         return *this;
     }
     void reserve(size_t n) {
@@ -146,7 +144,7 @@ class ConstIterator {
     void clear() {
         sz = 0;
     }
-    ostream& print(ostream & o) {
+    std::ostream& print(std::ostream & o) {
         for (size_t i{0}; i < sz; ++i)
             o << values[i] << '\n';
         return o;
@@ -178,7 +176,7 @@ class ConstIterator {
     }
     void pop_back() {
         if(empty())
-            throw runtime_error ("pop_back failed: vector cannot be empty");
+            throw std::runtime_error ("pop_back failed: vector cannot be empty");
         
         sz--;
     }
@@ -232,7 +230,7 @@ class ConstIterator {
     iterator erase(const_iterator pos) {
         auto diff = pos-begin();
         if (diff < 0 ||static_cast<size_type>(diff) >= sz)
-            throw runtime_error("Iterator out of bounds");
+            throw std::runtime_error("Iterator out of bounds");
         size_type current{static_cast<size_type>(diff)};
         for (auto i{current}; i < sz - 1; ++i)
             values[i] = values[i + 1];
