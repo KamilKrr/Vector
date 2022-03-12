@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
-#include "vector.h"
+#include "../vector.h"
 
 TEST_CASE("VectorTest, CopyConstructor") {
   const Vector v({0,1,2,3,4,5,6,7,8,9});

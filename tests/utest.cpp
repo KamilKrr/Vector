@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "vector.h"
-#include "vector.h" // check include guards
+#include "../vector.h"
+#include "../vector.h" // check include guards
 #include "doctest.h"
 #include <sstream>
 
