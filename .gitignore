@@ -1,2 +1,10 @@
 .vscode/*
 *.exe
+/main
+/utest
+/utest2
+/types_test
+/doctest
+/const_test
+/const_test_arrow
+/vector
