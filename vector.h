@@ -46,11 +46,21 @@ class Iterator {
 			return ptr;
 		}
 		bool operator==(const const_iterator& rop) const {
-			return ptr == rop.
+			return static_cast<const_iterator>(*this) == rop;
 		}
 		bool operator!=(const const_iterator& rop) const {
-			return !(this == rop);
+			return !(*this == rop);
 		}
+        iterator& operator++() {
+            ptr++;
+            return *this;
+        }
+        iterator operator++(int) {
+            return iterator(ptr++);
+        }
+        operator const_iterator() const {
+            return ConstIterator(ptr);
+        }
 };
 class ConstIterator {
 	public: 
@@ -61,6 +71,31 @@ class ConstIterator {
 		using iterator_category = forward_iterator_tag;
 	private:
 		pointer ptr;
+	public:
+		ConstIterator() : ptr{nullptr} {};
+		ConstIterator(pointer ptr) : ptr{ptr} {};
+		reference operator*() {
+			return *ptr;
+		}
+		pointer operator->() {
+			return ptr;
+		}
+		bool operator==(const const_iterator& rop) const {
+			return this->ptr == rop.ptr;
+		}
+		bool operator!=(const const_iterator& rop) const {
+			return !(*this == rop);
+		}
+        const_iterator& operator++() {
+            ptr++;
+            return *this;
+        }
+        const_iterator operator++(int) {
+            return const_iterator(ptr++);
+        }
+        friend Vector::difference_type operator-(const Vector::ConstIterator& lop, const Vector::ConstIterator& rop) {
+            return lop.ptr - rop.ptr;
+        }
 };
     Vector() {
         max_sz = 0;
@@ -165,12 +200,45 @@ class ConstIterator {
     }
 
 	iterator begin() {
-		return Iterator(values);
+		return iterator(values);
 	}
 
 	iterator end() {
-		return Iterator(values+sz);
+		return iterator(values+sz);
 	}
+
+    const_iterator begin() const {
+		return const_iterator(values);
+	}
+
+	const_iterator end() const {
+		return const_iterator(values+sz);
+	}
+
+    iterator insert(const_iterator pos, const_reference val) {
+        auto diff = pos-begin();
+        if (diff < 0 ||static_cast<size_type>(diff) > sz)
+            throw std::runtime_error("Iterator out of bounds");
+        size_type current{static_cast<size_type>(diff)};
+        if (sz >= max_sz)
+            reserve(max_sz * 2);
+        for (auto i {sz}; i-- > current;)
+            values[i+1] = values[i];
+        values[current] = val;
+        ++sz;
+        return iterator{values+current};
+    }
+
+    iterator erase(const_iterator pos) {
+        auto diff = pos-begin();
+        if (diff < 0 ||static_cast<size_type>(diff) >= sz)
+            throw runtime_error("Iterator out of bounds");
+        size_type current{static_cast<size_type>(diff)};
+        for (auto i{current}; i < sz - 1; ++i)
+            values[i] = values[i + 1];
+        --sz;
+        return iterator{values+current};
+    }
 };
 
 #endif
