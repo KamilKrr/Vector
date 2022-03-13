@@ -1,6 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
-#include <iostream>
+#include<iostream>
 
 class Vector {
 public:
@@ -144,11 +144,12 @@ class ConstIterator {
     void clear() {
         sz = 0;
     }
-    std::ostream& print(std::ostream & o) {
+    std::ostream& print(std::ostream & o) const {
         for (size_t i{0}; i < sz; ++i)
             o << values[i] << '\n';
         return o;
     }
+    friend std::ostream& operator<<(std::ostream& o, const Vector& v);
     size_t size() const {
         return sz;
     }
@@ -238,5 +239,9 @@ class ConstIterator {
         return iterator{values+current};
     }
 };
+
+std::ostream& operator<<(std::ostream& o, const Vector& v) {
+    return v.print(o);
+}
 
 #endif

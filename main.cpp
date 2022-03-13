@@ -1,4 +1,4 @@
-#include"vector.h"
+#include "vector.h"
 #include <iostream>
 
 using namespace std;
@@ -6,14 +6,23 @@ using namespace std;
 
 int main(){
 
-    Vector v1{3};
-    Vector v2(3);
+    Vector v{1, 2, 3, 4};
 
-    cout << v1.capacity();
-    cout << v2.capacity();
+    auto it = v.begin();
 
-    cout << *v1.begin();
+    cout << *it;
+    it++;
+    cout << *it;
+    it++;
+    cout << *it;
+    it++;
+    cout << *it;
 
+    //this should no longer be possible
+    it++;
+    cout << *it;
+    it++;
+    cout << *it;
 
     return 0;
 }
