@@ -18,10 +18,10 @@ int main(){
     it++;
     cout << *it;
 
-    //this should no longer be possible
-    it++;
+	
+	it++;
     cout << *it;
-    it++;
+	it++;
     cout << *it;
 
     return 0;
