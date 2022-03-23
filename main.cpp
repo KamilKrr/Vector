@@ -6,23 +6,14 @@ using namespace std;
 
 int main(){
 
-    Vector v{1, 2, 3, 4};
-
-    auto it = v.begin();
-
-    cout << *it;
-    it++;
-    cout << *it;
-    it++;
-    cout << *it;
-    it++;
-    cout << *it;
-
-	
-	it++;
-    cout << *it;
-	it++;
-    cout << *it;
+    Vector<double> x(0);
+ 	Vector<double> y(0);
+  	cout << x.size();
+	for(std::size_t i{0};i<100;++i){
+		x.insert(x.begin(),5);
+		y.push_back(3);
+	}
+	cout << x.size() << y.size();
 
     return 0;
 }

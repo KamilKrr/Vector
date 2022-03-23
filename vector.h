@@ -2,12 +2,12 @@
 #define VECTOR_H
 #include<iostream>
 
-//template<typename T>
+template<typename T>
 class Vector {
 public:
 	class ConstIterator;
 	class Iterator;
-    using value_type = double;
+    using value_type = T;
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
 	using reference = value_type&;
@@ -164,7 +164,6 @@ class ConstIterator {
             o << values[i] << '\n';
         return o;
     }
-    friend std::ostream& operator<<(std::ostream& o, const Vector& v);
     size_t size() const {
         return sz;
     }
@@ -235,7 +234,7 @@ class ConstIterator {
             throw std::runtime_error("Iterator out of bounds");
         size_type current{static_cast<size_type>(diff)};
         if (sz >= max_sz)
-            reserve(max_sz * 2);
+            reserve(max_sz * 2 + 1);
         for (auto i {sz}; i-- > current;)
             values[i+1] = values[i];
         values[current] = val;
@@ -253,11 +252,10 @@ class ConstIterator {
         --sz;
         return iterator{values+current, static_cast<long>(sz-1-current)};
     }
-};
 
-//template <typename T>
-std::ostream& operator<<(std::ostream& o, const Vector& v) {
-    return v.print(o);
-}
+    friend std::ostream& operator<<(std::ostream& o, const Vector& v){
+		return v.print(o);
+	}
+};
 
 #endif
