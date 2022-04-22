@@ -19,7 +19,6 @@ TEST_CASE("SecureIterator, EndIterator") {
   CHECK( end == v.end()++ );
   CHECK_THROWS( *v.end() );
   CHECK_THROWS( v.end().operator->());
-
 }
 
 TEST_CASE("SecureConstIterator, EndIterator") {
