@@ -35,17 +35,23 @@ class Iterator {
 
 	private:
 		pointer ptr;
-		long availible_increments;
+		const Vector* v;
+        value_type* values_copy;
+        bool is_invalid() {
+            return (!v || v->end() == ptr || values_copy != v->values);
+        }
 	public:
-		Iterator() : ptr{nullptr}, availible_increments{-1}{};
-		Iterator(pointer ptr) : ptr{ptr}, availible_increments{0} {};
-		Iterator(pointer ptr, long availible_increments) : ptr{ptr}, availible_increments{availible_increments} {};
+		Iterator() : ptr{nullptr}, v{nullptr}, values_copy{nullptr} {};
+		Iterator(pointer ptr) : ptr{ptr}, v{nullptr}, values_copy{nullptr} {};
+		Iterator(pointer ptr, const Vector* v) : ptr{ptr}, v{v} {
+            if(v) values_copy = v->values;
+        };
 		reference operator*() {
-			if(availible_increments <= 0) throw std::runtime_error("out of bounds");
+			if(is_invalid()) throw std::runtime_error("out of bounds");
 			return *ptr;
 		}
 		pointer operator->() {
-			if(availible_increments <= 0) throw std::runtime_error("out of bounds");
+			if(is_invalid()) throw std::runtime_error("out of bounds");
 			return ptr;
 		}
 		bool operator==(const const_iterator& rop) const {
@@ -55,17 +61,16 @@ class Iterator {
 			return !(*this == rop);
 		}
         iterator& operator++() {
-			if(availible_increments <= 0) return *this;
+            if(is_invalid()) return *this;
             ptr++;
-			availible_increments--;
             return *this;
         }
         iterator operator++(int) {
-			if(availible_increments <= 0) return *this;
-            return iterator(ptr++, availible_increments--);
+			if(is_invalid()) return *this;
+            return iterator(ptr++, v);
         }
         operator const_iterator() const {
-            return ConstIterator(ptr, availible_increments);
+            return ConstIterator(ptr, v);
         }
 };
 class ConstIterator {
@@ -77,17 +82,23 @@ class ConstIterator {
 		using iterator_category = std::forward_iterator_tag;
 	private:
 		pointer ptr;
-		long availible_increments;
+		const Vector* v;
+        value_type* values_copy;
+        bool is_invalid() {
+            return (!v || v->end() == ptr || values_copy != v->values);
+        }
 	public:
-		ConstIterator() : ptr{nullptr}, availible_increments{-1} {};
-		ConstIterator(pointer ptr) : ptr{ptr}, availible_increments{0} {};
-		ConstIterator(pointer ptr, long availible_increments) : ptr{ptr}, availible_increments{availible_increments} {};
+		ConstIterator() : ptr{nullptr}, v{nullptr}, values_copy{nullptr} {};
+		ConstIterator(pointer ptr) : ptr{ptr}, v{nullptr}, values_copy{nullptr} {};
+		ConstIterator(pointer ptr, const Vector* v) : ptr{ptr}, v{v} {
+            if(v) values_copy = v->values;
+        };
 		reference operator*() {
-			if(availible_increments <= 0) throw std::runtime_error("out of bounds");
+			if(is_invalid()) throw std::runtime_error("out of bounds");
 			return *ptr;
 		}
 		pointer operator->() {
-			if(availible_increments <= 0) throw std::runtime_error("out of bounds");
+			if(is_invalid()) throw std::runtime_error("out of bounds");
 			return ptr;
 		}
 		bool operator==(const const_iterator& rop) const {
@@ -97,14 +108,13 @@ class ConstIterator {
 			return !(*this == rop);
 		}
         const_iterator& operator++() {
-			if(availible_increments <= 0) return *this;
+			if(is_invalid()) return *this;
             ptr++;
-			availible_increments--;
             return *this;
         }
         const_iterator operator++(int) {
-			if(availible_increments <= 0) return *this;
-            return const_iterator(ptr++, availible_increments--);
+			if(is_invalid()) return *this;
+            return const_iterator(ptr++, v);
         }
         friend Vector::difference_type operator-(const Vector::ConstIterator& lop, const Vector::ConstIterator& rop) {
             return lop.ptr - rop.ptr;
@@ -213,19 +223,19 @@ class ConstIterator {
     }
 
 	iterator begin() {
-		return iterator(values, sz);
+		return iterator(values, this);
 	}
 
 	iterator end() {
-		return iterator(values+sz, -1);
+		return iterator(values+sz, this);
 	}
 
     const_iterator begin() const {
-		return const_iterator(values, sz);
+		return const_iterator(values, this);
 	}
 
 	const_iterator end() const {
-		return const_iterator(values+sz, -1);
+		return const_iterator(values+sz, this);
 	}
 
     iterator insert(const_iterator pos, const_reference val) {
@@ -239,7 +249,7 @@ class ConstIterator {
             values[i+1] = values[i];
         values[current] = val;
         ++sz;
-        return iterator{values+current, static_cast<long>(sz-1-current)};
+        return iterator{values+current, this};
     }
 
     iterator erase(const_iterator pos) {
@@ -250,7 +260,7 @@ class ConstIterator {
         for (auto i{current}; i < sz - 1; ++i)
             values[i] = values[i + 1];
         --sz;
-        return iterator{values+current, static_cast<long>(sz-1-current)};
+        return iterator{values+current, this};
     }
 
     friend std::ostream& operator<<(std::ostream& o, const Vector& v){
